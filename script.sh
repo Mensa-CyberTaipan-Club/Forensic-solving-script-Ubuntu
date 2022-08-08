@@ -148,7 +148,7 @@ fi
   
 #   fi
 # done
-
+clear
 echo "Checking maleware with ClamAV"
 
 sudo apt-get install clamav clamav-daemon -y
@@ -159,6 +159,7 @@ sudo systemctl enable clamav-freshclam
 sudo clamscan -r /home
 sudo clamscan --infected --remove --recursive /home
 sudo clamscan --infected --recursive --exclude-dir="^/sys" /
+clear
 
 echo "Updating operating system"
 
