@@ -1,12 +1,12 @@
 echo "Created by Jacob Strelnikov"
 echo "For solving forensics problems"
-echo "Updating operating system"
+
 
 # Checking If Root
-if [[ $EUID -ne 0 ]]
-then
-  echo "This script must be run as root."
-  exit
+if [[ "$(id -u)" -ne 0 ]]; then
+  # Code
+  echo "Run the script as root"
+  exit 1
 fi
 
 
@@ -15,7 +15,7 @@ echo "Updating packages and Repositories"
 
 apt update -y
 apt-get upgrade -y
-
+clear
 echo "Setting password policies. if something goes wrong, copy the contents of /etc/pam.d/common-password-backup  to /etc/pam.d/common-password"
 
 # This creates a backup of the file in case anything goes wrong.
@@ -28,16 +28,7 @@ sed -i 's/remember=[0-9]\+/remember=5' /etc/pam.d/common-password
 sed -i 's/retry=[0-9]\+/retry=3' /etc/pam.d/common-password
 # Changes the retry option to 3
 
-echo "Checking maleware with ClamAV"
-
-sudo apt-get install clamav clamav-daemon -y
-sudo systemctl stop clamav-freshclam 
-sudo freshclam
-sudo systemctl start clamav-freshclam
-sudo systemctl enable clamav-freshclam
-sudo clamscan -r /home
-sudo clamscan --infected --remove --recursive /home
-sudo clamscan --infected --recursive --exclude-dir="^/sys" /
+clear
 
 echo "removing unwanted packages"
 
@@ -112,14 +103,24 @@ snmpd" > packages.txt
 while read package; do apt show "$package" 2>/dev/null | grep -qvz 'State:.*(virtual)' && echo "$package" >>packages-valid && echo -ne "\r\033[K$package"; done <packages.txt
 sudo apt purge $(tr '\n' ' ' <packages-valid) -y
 
+clear
+
 echo "removing prohiited files"
 
 find /home -regextype posix-extended -regex '.*.(midi|mid|mod|mp3|mp2|mpa|abs|mpega|au|snd|wav|aiff|aif|sid|flac|ogg)$' -delete
-
+clear
 
 echo "enabling Firewall"
+echo "checking if ufw is installed"
+if ufw | grep -q 'ufw: command not found'; then
+    echo "ufw is not installed"
+    apt install ufw -y
+    ufw enable > /dev/null
+else
+    echo "ufw is installed"
+    ufw enable > /dev/null
+fi
 
-ufw enable > /dev/null
 
 #Removed due to not working
 
@@ -148,6 +149,17 @@ ufw enable > /dev/null
   
 #   fi
 # done
+
+echo "Checking maleware with ClamAV"
+
+sudo apt-get install clamav clamav-daemon -y
+sudo systemctl stop clamav-freshclam 
+sudo freshclam
+sudo systemctl start clamav-freshclam
+sudo systemctl enable clamav-freshclam
+sudo clamscan -r /home
+sudo clamscan --infected --remove --recursive /home
+sudo clamscan --infected --recursive --exclude-dir="^/sys" /
 
 echo "Updating operating system"
 
