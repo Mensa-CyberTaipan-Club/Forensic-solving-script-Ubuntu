@@ -9,10 +9,7 @@ then
   exit
 fi
 
-echo "Updating operating system"
 
-sudo apt install unattended-upgrades
-systemctl status unattended-upgrades
 
 echo "Updating packages and Repositories"
 
@@ -33,8 +30,8 @@ sed -i 's/retry=[0-9]\+/retry=3' /etc/pam.d/common-password
 
 echo "Checking maleware with ClamAV"
 
-sudo apt-get install clamav clamav-daemon
-sudo systemctl stop clamav-freshclam
+sudo apt-get install clamav clamav-daemon -y
+sudo systemctl stop clamav-freshclam 
 sudo freshclam
 sudo systemctl start clamav-freshclam
 sudo systemctl enable clamav-freshclam
@@ -42,9 +39,75 @@ sudo clamscan -r /home
 sudo clamscan --infected --remove --recursive /home
 sudo clamscan --infected --recursive --exclude-dir="^/sys" /
 
-echo "removing unwanted software"
+echo "removing unwanted packages"
 
-wget https://raw.githubusercontent.com/aydenbottos/ayden-linux-script/master/packages.txt
+echo "netcat
+netcat-openbsd
+minetest
+wesnoth
+manaplus
+gameconqueror
+netcat-traditional
+gcc
+g++
+ncat
+pnetcat
+socat
+freeciv*
+sock
+socket
+sbd
+transmission
+transmission-daemon
+deluge
+yersinia
+nis
+rsh-client
+talk
+ldap-utils
+john
+john-data
+hydra
+hydra-gtk
+aircrack-ng
+fcrackzip
+lcrack
+ophcrack
+ophcrack-cli
+pdfcrack
+pyrit
+rarcrack
+sipcrack
+irpas
+wireshark*
+tshark
+kismet
+zenmap
+nmap
+wireguard
+*torrent
+openvpn
+logkeys
+zeitgeist-core
+zeitgeist-datahub
+python-zeitgeist
+rhythmbox-plugin-zeitgeist
+zeitgeist
+nfs-kernel-server
+nfs-common
+portmap
+rpcbind
+autofs
+nginx
+nginx-common
+inetd
+openbsd-inetd
+xinetd
+inetutils-*
+*vnc*
+vtgrab
+snmp
+snmpd" > packages.txt
 
 while read package; do apt show "$package" 2>/dev/null | grep -qvz 'State:.*(virtual)' && echo "$package" >>packages-valid && echo -ne "\r\033[K$package"; done <packages.txt
 sudo apt purge $(tr '\n' ' ' <packages-valid) -y
@@ -58,29 +121,35 @@ echo "enabling Firewall"
 
 ufw enable > /dev/null
 
+#Removed due to not working
 
-echo "Removing Unauthorised Users"
+# echo "Removing Unauthorised Users"
 
-# read -p "Enter the usernames you want to remove sepertaed by colons: " into usernames
+# #read users.txt and return each line as an array
 
-read -p "Enter the usernames taht are allowed sepertaed by colons:" usernames
 
-# split the usernames into an array
 
-IFS=':' read -r -a array <<< "$usernames"
+# while read line; do array+="$line"; done < users.txt
 
-# get a list of the users on the system
 
-users=$(cut -d: -f1 < /etc/passwd)
 
-for user in "${array[@]}"; do
-  if ["$users" in "$user"]; then
-    echo "user $user found"
-  else
-    echo "user $user not found"
-    #delete the user
-    deluser $user
+
+# # get a list of the users on the system
+
+# users=$(cut -d: -f1 < /etc/passwd)
+
+# for user in "${array[@]}"; do
+#   if ["$users" in "$user"]; then
+#     echo "user $user found"
+#   else
+#     echo "user $user not found"
+#     #delete the user
+#     deluser $user
   
-  fi
+#   fi
+# done
 
+echo "Updating operating system"
 
+sudo apt install unattended-upgrades -y
+systemctl status unattended-upgrades 
