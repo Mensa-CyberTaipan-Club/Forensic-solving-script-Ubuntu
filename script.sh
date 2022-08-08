@@ -3,12 +3,11 @@ echo "For solving forensics problems"
 
 
 # Checking If Root
-if [[ "$(id -u)" -ne 0 ]]; then
-  # Code
-  echo "Run the script as root"
-  exit 1
+if [[ $EUID -ne 0 ]]
+then
+  echo "This script must be run as root."
+  exit
 fi
-
 
 
 echo "Updating packages and Repositories"
@@ -112,7 +111,7 @@ clear
 
 echo "enabling Firewall"
 echo "checking if ufw is installed"
-if ufw | grep -q 'ufw: command not found'; then
+if ufw | grep -q 'ufw: command not found > /dev/null'; then
     echo "ufw is not installed"
     apt install ufw -y
     ufw enable > /dev/null
