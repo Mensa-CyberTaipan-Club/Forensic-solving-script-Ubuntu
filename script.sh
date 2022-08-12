@@ -106,7 +106,7 @@ echo "Changing password of user"
 read -p "How many users passwords do you want to change?" num
 
 
-for ((i; i<num; i++)); do
+for ((i = 0=0; i<num; i++)); do
   read -p "Enter username: " user
   read -p "Enter new password: " pass
   echo "$user:$pass" | chpasswd
