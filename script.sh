@@ -86,17 +86,17 @@ fi
 clear
 echo "Checking maleware with ClamAV"
 
-sudo apt-get install clamav clamav-daemon -y
-sudo systemctl stop clamav-freshclam 
-sudo freshclam
-sudo systemctl start clamav-freshclam
-sudo systemctl enable clamav-freshclam
-sudo clamscan -r /home
-sudo clamscan --infected --remove --recursive /home
-sudo clamscan --infected --recursive --exclude-dir="^/sys" /
+apt-get install clamav clamav-daemon -y
+systemctl stop clamav-freshclam 
+freshclam
+systemctl start clamav-freshclam
+systemctl enable clamav-freshclam
+clamscan -r /home
+clamscan --infected --remove --recursive /home
+clamscan --infected --recursive --exclude-dir="^/sys" /
 clear
 
 echo "Updating operating system"
 
 sudo apt install unattended-upgrades -y
-systemctl status unattended-upgrades 
+systemctl status unattended-upgrades
