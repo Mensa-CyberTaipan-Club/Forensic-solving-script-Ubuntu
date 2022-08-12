@@ -110,4 +110,4 @@ for ((i; i<num; i++)); do
   read -p "Enter username: " user
   read -p "Enter new password: " pass
   echo "$user:$pass" | chpasswd
-done
+dones
