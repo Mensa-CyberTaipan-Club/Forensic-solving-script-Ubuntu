@@ -31,73 +31,7 @@ clear
 
 echo "removing unwanted packages"
 
-echo "netcat
-netcat-openbsd
-minetest
-wesnoth
-manaplus
-gameconqueror
-netcat-traditional
-gcc
-g++
-ncat
-pnetcat
-socat
-freeciv*
-sock
-socket
-sbd
-transmission
-transmission-daemon
-deluge
-yersinia
-nis
-rsh-client
-talk
-ldap-utils
-john
-john-data
-hydra
-hydra-gtk
-aircrack-ng
-fcrackzip
-lcrack
-ophcrack
-ophcrack-cli
-pdfcrack
-pyrit
-rarcrack
-sipcrack
-irpas
-wireshark*
-tshark
-kismet
-zenmap
-nmap
-wireguard
-*torrent
-openvpn
-logkeys
-zeitgeist-core
-zeitgeist-datahub
-python-zeitgeist
-rhythmbox-plugin-zeitgeist
-zeitgeist
-nfs-kernel-server
-nfs-common
-portmap
-rpcbind
-autofs
-nginx
-nginx-common
-inetd
-openbsd-inetd
-xinetd
-inetutils-*
-*vnc*
-vtgrab
-snmp
-snmpd" > packages.txt
+
 
 while read package; do apt show "$package" 2>/dev/null | grep -qvz 'State:.*(virtual)' && echo "$package" >>packages-valid && echo -ne "\r\033[K$package"; done <packages.txt
 sudo apt purge $(tr '\n' ' ' <packages-valid) -y
